@@ -16,11 +16,9 @@ from tensorflow.keras.applications.vgg16 import preprocess_input
 # Loading Models
 covid_model = load_model('models/covid.h5')
 braintumor_model = load_model('models/braintumor.h5')
-alzheimer_model = load_model('models/alzheimer_model.h5')
 diabetes_model = pickle.load(open('models/diabetes.sav', 'rb'))
 heart_model = pickle.load(open('models/heart_disease.pickle.dat', "rb"))
 pneumonia_model = load_model('models/pneumonia_model.h5')
-breastcancer_model = joblib.load('models/cancer_model.pkl')
 
 # Configuring Flask
 UPLOAD_FOLDER = 'static/uploads'
@@ -92,11 +90,6 @@ def covid():
     return render_template('covid.html')
 
 
-@app.route('/breastcancer')
-def breast_cancer():
-    return render_template('breastcancer.html')
-
-
 @app.route('/braintumor')
 def brain_tumor():
     return render_template('braintumor.html')
@@ -105,11 +98,6 @@ def brain_tumor():
 @app.route('/diabetes')
 def diabetes():
     return render_template('diabetes.html')
-
-
-@app.route('/alzheimer')
-def alzheimer():
-    return render_template('alzheimer.html')
 
 
 @app.route('/pneumonia')
@@ -207,56 +195,6 @@ def resultd():
             [[pregnancies, glucose, bloodpressure, skinthickness, insulin, bmi, diabetespedigree, age]])
         # pb.push_sms(pb.devices[0],str(phone), 'Hello {},\nYour Diabetes test results are ready.\nRESULT: {}'.format(firstname,['NEGATIVE','POSITIVE'][pred]))
         return render_template('resultd.html', fn=firstname, ln=lastname, age=age, r=pred, gender=gender)
-
-
-@app.route('/resultbc', methods=['POST'])
-def resultbc():
-    if request.method == 'POST':
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        email = request.form['email']
-        phone = request.form['phone']
-        gender = request.form['gender']
-        age = request.form['age']
-        cpm = request.form['concave_points_mean']
-        am = request.form['area_mean']
-        rm = request.form['radius_mean']
-        pm = request.form['perimeter_mean']
-        cm = request.form['concavity_mean']
-        pred = breastcancer_model.predict(
-            np.array([cpm, am, rm, pm, cm]).reshape(1, -1))
-        # pb.push_sms(pb.devices[0],str(phone), 'Hello {},\nYour Breast Cancer test results are ready.\nRESULT: {}'.format(firstname,['NEGATIVE','POSITIVE'][pred]))
-        return render_template('resultbc.html', fn=firstname, ln=lastname, age=age, r=pred, gender=gender)
-
-
-@app.route('/resulta', methods=['GET', 'POST'])
-def resulta():
-    if request.method == 'POST':
-        print(request.url)
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        email = request.form['email']
-        phone = request.form['phone']
-        gender = request.form['gender']
-        age = request.form['age']
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash('Image successfully uploaded and displayed below')
-            img = cv2.imread('static/uploads/'+filename)
-            img = cv2.resize(img, (176, 176))
-            img = img.reshape(1, 176, 176, 3)
-            img = img/255.0
-            pred = alzheimer_model.predict(img)
-            pred = pred[0].argmax()
-            print(pred)
-            # pb.push_sms(pb.devices[0],str(phone), 'Hello {},\nYour Alzheimer test results are ready.\nRESULT: {}'.format(firstname,['NonDemented','VeryMildDemented','MildDemented','ModerateDemented'][pred]))
-            return render_template('resulta.html', filename=filename, fn=firstname, ln=lastname, age=age, r=0, gender=gender)
-
-        else:
-            flash('Allowed image types are - png, jpg, jpeg')
-            return redirect('/')
 
 
 @app.route('/resultp', methods=['POST'])
