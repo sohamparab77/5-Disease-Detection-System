@@ -29,7 +29,7 @@ An end-to-end machine learning system designed to classify and detect five disti
 | **Heart Disease** | Patient Metrics | XGBoost Classifier | **89.13%** |
 
 <details>
-<summary>**🔍 Click to view sample diagnosis and UI outputs**</summary>
+<summary><h3>🔍 Click to view sample diagnosis and UI outputs</h3></summary>
 <img width="1892" height="912" alt="image" src="https://github.com/user-attachments/assets/d7639b65-3049-4fbb-8358-2b340ce93c14" />
 <img width="1844" height="1054" alt="image" src="https://github.com/user-attachments/assets/f9bffa01-b4ed-4dee-a794-78049cb25b23" />
 <img width="1919" height="907" alt="image" src="https://github.com/user-attachments/assets/3b2c0ba9-fe75-41bd-b319-585c79821bc6" />
